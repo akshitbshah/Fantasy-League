@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
-  origin: ['https://fantasy-league-lemon.vercel.app', 'http://localhost:8080'],
+  origin: true,
   credentials: true
 }));
 app.use(express.json());
