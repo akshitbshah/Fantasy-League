@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friends Fantasy League - FIFA World Cup 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-card">
+            <div class="auth-header">
+                <h1>Friends Fantasy League</h1>
+                <p class="subtitle">FIFA World Cup 2026</p>
+            </div>
+            
+            <div id="loginForm" class="auth-form">
+                <h2>Sign In</h2>
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button onclick="login()" class="btn-primary">Sign In</button>
+                <p class="auth-switch">Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+            </div>
+
+            <div id="signupForm" class="auth-form" style="display: none;">
+                <h2>Create Account</h2>
+                <input type="text" id="signupUsername" placeholder="Username" required>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="password" id="signupPassword" placeholder="Password (min 6 chars)" required>
+                <button onclick="signup()" class="btn-primary">Create Account</button>
+                <p class="auth-switch">Already have an account? <a href="#" onclick="showLogin()">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" style="display: none;">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="logo">Friends Fantasy League</h1>
+                    <span class="season-badge">FIFA World Cup 2026</span>
+                </div>
+                <div class="header-right">
+                    <span class="user-greeting">Welcome, <strong id="usernameDisplay"></strong></span>
+                    <button onclick="logout()" class="btn-secondary">Logout</button>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-tab="predictions" onclick="switchTab('predictions')">
+                    Your Predictions
+                </button>
+                <button class="nav-tab" data-tab="matches" onclick="switchTab('matches')">
+                    Teams and Matches
+                </button>
+                <button class="nav-tab" data-tab="test" onclick="switchTab('test')">
+                    Test
+                </button>
+                <button class="nav-tab" data-tab="about" onclick="switchTab('about')">
+                    About
+                </button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Predictions Tab -->
+            <div id="predictionsTab" class="tab-content active">
+                <!-- Dashboard Sections -->
+                <div class="dashboard-grid">
+                    <!-- Leaderboard Section -->
+                    <section class="dashboard-card leaderboard-card">
+                        <div class="card-header">
+                            <h2>Leaderboard</h2>
+                            <div class="trophy-icon">🏆</div>
+                        </div>
+                        <div class="leaderboard-list" id="leaderboardList">
+                            <div class="loading">Loading leaderboard...</div>
+                        </div>
+                    </section>
+
+                    <!-- Currently Playing Matches -->
+                    <section class="dashboard-card">
+                        <div class="card-header">
+                            <h2>Live Matches</h2>
+                            <div class="live-indicator"></div>
+                        </div>
+                        <div id="currentMatches" class="matches-container">
+                            <div class="no-matches">No matches currently playing</div>
+                        </div>
+                    </section>
+
+                    <!-- Future Matches -->
+                    <section class="dashboard-card">
+                        <div class="card-header">
+                            <h2>Upcoming Matches</h2>
+                        </div>
+                        <div id="futureMatches" class="matches-container">
+                            <div class="loading">Loading matches...</div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- User's Total Points -->
+                <section class="points-banner">
+                    <div class="points-content">
+                        <h3>Your Total Points</h3>
+                        <div class="total-points" id="userTotalPoints">0</div>
+                        <div class="points-breakdown">
+                            <span>TP1: <strong id="tp1Points">0</strong></span>
+                            <span>TP2: <strong id="tp2Points">0</strong></span>
+                            <span>TP3: <strong id="tp3Points">0</strong></span>
+                            <span>Match: <strong id="matchPoints">0</strong></span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Team Predictions Section -->
+                <section class="predictions-section">
+                    <h2>Team Predictions</h2>
+                    <div class="team-predictions-grid">
+                        <!-- TP1 -->
+                        <div class="prediction-card">
+                            <h3>TP1: Tournament Winner</h3>
+                            <p class="prediction-desc">Predict the final winner and runner-up</p>
+                            <div class="prediction-form">
+                                <select id="tp1Winner" class="team-select">
+                                    <option value="">Select Winner</option>
+                                </select>
+                                <select id="tp1RunnerUp" class="team-select">
+                                    <option value="">Select Runner-up</option>
+                                </select>
+                                <button onclick="submitTeamPrediction('TP1')" class="btn-primary">Submit TP1</button>
+                            </div>
+                        </div>
+
+                        <!-- TP2 -->
+                        <div class="prediction-card">
+                            <h3>TP2: Group Stage Leaders</h3>
+                            <p class="prediction-desc">Predict leaders for each group</p>
+                            <div class="prediction-form">
+                                <select id="tp2Group" class="team-select">
+                                    <option value="">Select Group</option>
+                                    <option value="A">Group A</option>
+                                    <option value="B">Group B</option>
+                                    <option value="C">Group C</option>
+                                    <option value="D">Group D</option>
+                                    <option value="E">Group E</option>
+                                    <option value="F">Group F</option>
+                                    <option value="G">Group G</option>
+                                    <option value="H">Group H</option>
+                                </select>
+                                <select id="tp2Winner" class="team-select">
+                                    <option value="">Select Leader</option>
+                                </select>
+                                <select id="tp2RunnerUp" class="team-select">
+                                    <option value="">Select 2nd Place</option>
+                                </select>
+                                <button onclick="submitTeamPrediction('TP2')" class="btn-primary">Submit TP2</button>
+                            </div>
+                        </div>
+
+                        <!-- TP3 -->
+                        <div class="prediction-card">
+                            <h3>TP3: Second Chance</h3>
+                            <p class="prediction-desc">New prediction if TP1 team eliminated in qualifying</p>
+                            <div class="prediction-form">
+                                <select id="tp3Winner" class="team-select">
+                                    <option value="">Select Winner</option>
+                                </select>
+                                <select id="tp3RunnerUp" class="team-select">
+                                    <option value="">Select Runner-up</option>
+                                </select>
+                                <button onclick="submitTeamPrediction('TP3')" class="btn-primary">Submit TP3</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Match Predictions Section -->
+                <section class="predictions-section">
+                    <h2>Match Predictions</h2>
+                    <div class="round-selector">
+                        <button class="round-btn active" onclick="filterMatchesByRound('all')">All</button>
+                        <button class="round-btn" onclick="filterMatchesByRound('qualifying')">Qualifying</button>
+                        <button class="round-btn" onclick="filterMatchesByRound('round_of_16')">Round of 16</button>
+                        <button class="round-btn" onclick="filterMatchesByRound('quarterfinals')">Quarter Finals</button>
+                        <button class="round-btn" onclick="filterMatchesByRound('semifinals')">Semi Finals</button>
+                        <button class="round-btn" onclick="filterMatchesByRound('final')">Final</button>
+                    </div>
+                    <div id="matchPredictionsList" class="match-predictions-list">
+                        <div class="loading">Loading matches...</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Teams and Matches Tab -->
+            <div id="matchesTab" class="tab-content">
+                <section class="teams-section">
+                    <h2>FIFA World Cup 2026 Teams</h2>
+                    <div class="groups-container" id="teamsGroups">
+                        <div class="loading">Loading teams...</div>
+                    </div>
+                </section>
+
+                <section class="all-matches-section">
+                    <h2>All Matches</h2>
+                    <div class="round-selector">
+                        <button class="round-btn active" onclick="filterAllMatches('all')">All</button>
+                        <button class="round-btn" onclick="filterAllMatches('qualifying')">Qualifying</button>
+                        <button class="round-btn" onclick="filterAllMatches('round_of_16')">Round of 16</button>
+                        <button class="round-btn" onclick="filterAllMatches('quarterfinals')">Quarter Finals</button>
+                        <button class="round-btn" onclick="filterAllMatches('semifinals')">Semi Finals</button>
+                        <button class="round-btn" onclick="filterAllMatches('final')">Final</button>
+                    </div>
+                    <div id="allMatchesList" class="all-matches-list">
+                        <div class="loading">Loading matches...</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Test Tab -->
+            <div id="testTab" class="tab-content">
+                <section class="test-section">
+                    <h2>Test & Debug</h2>
+                    <p>Use this section to test features and debug issues.</p>
+                    
+                    <div class="test-actions">
+                        <button onclick="testRecalculatePoints()" class="btn-primary">Recalculate My Points</button>
+                        <button onclick="testLoadData()" class="btn-secondary">Reload All Data</button>
+                    </div>
+
+                    <div class="test-output">
+                        <h3>Debug Output</h3>
+                        <pre id="testOutput">Ready for testing...</pre>
+                    </div>
+                </section>
+            </div>
+
+            <!-- About Tab -->
+            <div id="aboutTab" class="tab-content">
+                <section class="about-section">
+                    <h2>About Friends Fantasy League</h2>
+                    
+                    <div class="about-content">
+                        <h3>How It Works</h3>
+                        <p>Welcome to the FIFA World Cup 2026 Fantasy Football Prediction League! Compete with your friends by predicting match outcomes and tournament winners.</p>
+
+                        <h3>Prediction Types</h3>
+                        
+                        <div class="rules-section">
+                            <h4>Team Predictions</h4>
+                            <ul>
+                                <li><strong>TP1 (Tournament Winner):</strong> Predict the final winner and runner-up before Game 1 or by June 16. Earn 500 points for correct winner, 300 for runner-up.</li>
+                                <li><strong>TP2 (Group Leaders):</strong> Predict each group's leader and runner-up before Game 1 or by June 16. Earn 200 points for correct leader, 100 for runner-up.</li>
+                                <li><strong>TP3 (Second Chance):</strong> If your TP1 team is eliminated in qualifying, pick a new winner before June 27. Same points as TP1.</li>
+                            </ul>
+                        </div>
+
+                        <div class="rules-section">
+                            <h4>Match Predictions</h4>
+                            <ul>
+                                <li><strong>Qualifying Round:</strong> 5 points for correct outcome, 25 for exact score</li>
+                                <li><strong>Round of 16:</strong> 10 points for correct outcome, 50 for exact score</li>
+                                <li><strong>Quarter Finals:</strong> 15 points for correct outcome, 75 for exact score</li>
+                                <li><strong>Semi Finals:</strong> 20 points for correct outcome, 100 for exact score</li>
+                                <li><strong>Final:</strong> 25 points for correct outcome, 125 for exact score</li>
+                            </ul>
+                        </div>
+
+                        <div class="rules-section">
+                            <h4>Multipliers</h4>
+                            <ul>
+                                <li><strong>Double Up:</strong> If your picked team has less than 6 points after 2 games, you can double all future points for that team. Must activate by EOD June 23.</li>
+                                <li><strong>Re-Double Up:</strong> After qualifying rounds, re-double points for your TP1/TP3 picks. Must activate after June 27.</li>
+                            </ul>
+                        </div>
+
+                        <h3>Important Deadlines</h3>
+                        <ul>
+                            <li>All match predictions must be submitted 15 minutes before kickoff</li>
+                            <li>Past matches cannot be modified</li>
+                            <li>TP1 and TP2 predictions: Before first game or by June 16</li>
+                            <li>TP3 predictions: Before June 27</li>
+                            <li>Double Up activation: By EOD June 23</li>
+                            <li>Re-Double Up activation: After June 27</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <p>&copy; 2026 Friends Fantasy League. Not affiliated with FIFA.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
