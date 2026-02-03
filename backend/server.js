@@ -30,6 +30,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+// CORS test endpoint
+app.get("/cors-test", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://fantasy-league-lemon.vercel.app");
+  res.json({ cors: "working" });
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/predictions', predictionsRoutes);

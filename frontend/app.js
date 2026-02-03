@@ -1,5 +1,6 @@
 // Configuration
-const API_BASE_URL = 'https://fantasy-league-production-cdaa.up.railway.app/api';
+const API_URL = "https://fantasy-league-production-9b68.up.railway.app";
+
 let authToken = null;
 let currentUser = null;
 let allMatches = [];
